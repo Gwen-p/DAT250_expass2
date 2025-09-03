@@ -5,16 +5,13 @@ import com.example.expass2.model.User;
 import com.example.expass2.model.Vote;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class PollManager {
-    private Map<String, User> users = new HashMap<>();
-    private Map<String, Poll> polls = new HashMap<>();
-    private Map<Long, Vote> votes = new HashMap<>();
+    private final Map<String, User> users = new HashMap<>();
+    private final Map<String, Poll> polls = new HashMap<>();
+    private final Map<String, Vote> votes = new HashMap<>();
 
 
     public User addUser(User user) {
@@ -25,6 +22,11 @@ public class PollManager {
     public Poll addPoll(Poll poll) {
         polls.put(poll.getQuestion(), poll);
         return poll;
+    }
+
+    public Vote addVote(Vote vote) {
+        votes.put(vote.getUser().getEmail(), vote);
+        return vote;
     }
 
     public List<User> getUsers() {
@@ -39,7 +41,7 @@ public class PollManager {
         users.remove(id);
     }
 
-    public List<Poll> getPoll() {
+    public List<Poll> getPolls() {
         return new ArrayList<>(polls.values());
     }
 
@@ -50,4 +52,17 @@ public class PollManager {
     public void deletePoll(String id) {
         polls.remove(id);
     }
+
+    public List<Vote> getVotes() {
+        return  new ArrayList<>(votes.values());
+    }
+
+    public Vote getVote(String id) {
+        return votes.get(id);
+    }
+
+    public void deleteVote(String id) {
+        votes.remove(id);
+    }
+
 }

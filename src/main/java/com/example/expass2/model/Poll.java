@@ -1,17 +1,16 @@
 package com.example.expass2.model;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 public class Poll {
     private User creator;
     private String question;
     private Instant publishedAt;
     private Instant validUntil;
-    private List<VoteOption> options = new ArrayList<>();
+    private Set<VoteOption> options ;
 
-    public Poll(User creator, String question, Instant publishedAt, Instant validUntil, List<VoteOption> options) {
+    public Poll(User creator, String question, Instant publishedAt, Instant validUntil, Set<VoteOption> options) {
         this.creator = creator;
         this.question = question;
         this.publishedAt = publishedAt;
@@ -51,11 +50,11 @@ public class Poll {
         this.validUntil = validUntil;
     }
 
-    public List<VoteOption> getOptions() {
+    public Set<VoteOption> getOptions() {
         return options;
     }
 
-    public void setOptions(List<VoteOption> options) {
+    public void setOptions(Set<VoteOption> options) {
         this.options = options;
     }
 }

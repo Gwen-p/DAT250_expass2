@@ -19,30 +19,29 @@ public class UserController {
 
     private final PollManager pollManager;
 
-    // Inyección de dependencias
     public UserController(PollManager _pollManager) {
         this.pollManager = _pollManager;
     }
 
-    // ✅ Crear un usuario
+    // Create a user
     @PostMapping
     public User createUser(@RequestBody User user) {
         return pollManager.addUser(user);
     }
 
-    // ✅ Listar todos los usuarios
+    // Obtain the users list
     @GetMapping
     public Collection<User> getAllUsers() {
         return pollManager.getUsers();
     }
 
-    // ✅ Obtener un usuario específico por id
+    // Obtain a user by id
     @GetMapping("/{id}")
     public User getUser(@PathVariable String id) {
         return pollManager.getUser(id);
     }
 
-    // ✅ Eliminar un usuario
+    // Delete a user
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable String id) {
         pollManager.deleteUser(id);

@@ -17,27 +17,27 @@ public class PollController {
         this.pollManager = _pollManager;
     }
 
-    // ✅ Crear un poll
+    // Create a poll
     @PostMapping
     public Poll createPoll(@RequestBody Poll poll) {
         return pollManager.addPoll(poll);
     }
 
-    // ✅ Listar todos los poll
+    // Obtain the list of polls
     @GetMapping
     public Collection<Poll> getAllPolls() {
         return pollManager.getPolls();
     }
 
-    // ✅ Obtener un poll específico por id
+    // Obtain a poll by id
     @GetMapping("/{id}")
     public Poll getPoll(@PathVariable String id) {
         return pollManager.getPoll(id);
     }
 
-    // ✅ Eliminar un usuario
+    // Delete a user
     @DeleteMapping("/{id}")
     public void delete(@PathVariable String id) {
-        pollManager.deleteUser(id);
+        pollManager.deletePoll(id);
     }
 }
