@@ -44,6 +44,9 @@ public class User {
     }
 
     public void addCreatedPoll(Poll poll) {
+        if (this.createdPolls == null) {
+            this.createdPolls = new ArrayList<>();
+        }
         this.createdPolls.add(poll);
     }
 }

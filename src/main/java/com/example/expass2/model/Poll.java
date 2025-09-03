@@ -14,11 +14,10 @@ public class Poll {
     private int numVotes = 0;
 
 
-    public Poll(User creator, String question, Instant validUntil) {
-        this.creator = creator;
+    public Poll(String question, Instant validUntil,  Set<VoteOption> options) {
         this.question = question;
         this.validUntil = validUntil;
-        setOptions(new LinkedHashSet<>());
+        this.options = options;
     }
 
     public User getCreator() {
@@ -62,12 +61,15 @@ public class Poll {
     }
 
     public void addVoteOption(VoteOption option) {
+        if (this.options == null) {
+            this.options = new LinkedHashSet<>();
+        }
         option.setPresentationOrder(options.size() + 1);
         this.options.add(option);
     }
 
     public void setId(String pollIds) {
-        id = pollIds;
+        this.id = pollIds;
     }
 
     public String getId() {

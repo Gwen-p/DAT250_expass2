@@ -1,0 +1,58 @@
+### GET request to example server
+GET https://examples.http-client.intellij.net/get
+    ?generated-in=IntelliJ IDEA
+
+### 1 Create a new user
+POST http://localhost:8080/users
+Content-Type: application/json
+
+{
+  "username": "alice",
+  "email": "alice@example.com"
+}
+
+### 2 List all users (-> shows the newly created user)
+GET http://localhost:8080/users
+
+### 3 Create another user
+POST 127.0.0.1:8080/users
+Content-Type: application/json
+
+{
+  "username": "marco",
+  "email": "marco@example.com"
+}
+
+### 4 List all users again (-> shows two users)
+GET http://localhost:8080/users
+
+### 5 User 1 creates a new poll
+POST http://localhost:8080/polls/alice
+Content-Type: application/json
+
+{
+  "question": "What is your favourite animal?",
+  "validUntil": "2025-09-10T10:00:00Z",
+  "options": [
+    {"caption": "Giraffe", "presentationOrder": 1},
+    {"caption": "Snake", "presentationOrder": 2}
+  ]
+}
+
+### 6 List polls (-> shows the new poll)
+GET http://localhost:8080/polls
+
+### 7 User 2 votes on the poll
+
+
+
+### 8 User 2 changes his vote
+
+
+### 9 List votes (-> shows the most recent vote for User 2)
+
+
+### 10 Delete the one poll
+
+
+### 11 List votes (-> empty)

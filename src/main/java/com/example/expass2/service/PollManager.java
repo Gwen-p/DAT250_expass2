@@ -39,10 +39,18 @@ public class PollManager {
 //POLL---------------------------------------------------
 
 
-    public Poll addPoll(Poll poll) {
-        poll.setId(""+pollIds);
-        polls.put(poll.getId(), poll);
-        pollIds += 1;
+    public Poll addPoll(Poll _poll, String userId) {
+        Poll poll = _poll;
+        if (users.containsKey(userId)) {
+            poll.setId(""+pollIds);
+            poll.setCreator(users.get(userId));
+            users.get(userId).addCreatedPoll(poll);
+            polls.put(poll.getId(), poll);
+            pollIds += 1;
+        }else {
+            poll = null;
+        }
+
         return poll;
     }
 

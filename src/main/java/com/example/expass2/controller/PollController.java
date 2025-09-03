@@ -22,10 +22,14 @@ public class PollController {
     }
 
     // Create a poll
-    @PostMapping
-    public Poll createPoll(@RequestBody Poll poll) {
-        poll.setPublishedAt(Instant.now());
-        return pollManager.addPoll(poll);
+    @PostMapping("/{userId}")
+    public Poll createPoll(@RequestBody Poll _poll, @PathVariable String userId) {
+        _poll.setPublishedAt(Instant.now());
+        Poll poll = pollManager.addPoll(_poll, userId);
+        if (poll == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User no encontrado");
+        }
+        return poll;
     }
 
     // Create a vote option of a poll
