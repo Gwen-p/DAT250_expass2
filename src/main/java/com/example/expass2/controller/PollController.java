@@ -2,9 +2,11 @@ package com.example.expass2.controller;
 
 import com.example.expass2.model.Poll;
 import com.example.expass2.model.User;
+import com.example.expass2.model.VoteOption;
 import com.example.expass2.service.PollManager;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Collection;
 
 @RestController
@@ -20,7 +22,14 @@ public class PollController {
     // Create a poll
     @PostMapping
     public Poll createPoll(@RequestBody Poll poll) {
+        poll.setPublishedAt(Instant.now());
         return pollManager.addPoll(poll);
+    }
+
+    // Create a vote option of a poll
+    @PutMapping("/{id}")
+    public void addVoteOptions(@RequestBody VoteOption option, @PathVariable String id) {
+        pollManager.getPoll(id).addVoteOption(option);
     }
 
     // Obtain the list of polls

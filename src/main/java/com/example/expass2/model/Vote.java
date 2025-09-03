@@ -3,13 +3,12 @@ package com.example.expass2.model;
 import java.time.Instant;
 
 public class Vote {
-    private String id;
+    private Long id;
     private Instant publishedAt;
     private VoteOption voteOption;
     private User user;
 
-    public Vote(Instant publishedAt, VoteOption voteOption, User user) {
-        this.publishedAt = publishedAt;
+    public Vote( VoteOption voteOption, User user) {
         this.voteOption = voteOption;
         this.user = user;
     }
@@ -38,11 +37,11 @@ public class Vote {
         this.user = user;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

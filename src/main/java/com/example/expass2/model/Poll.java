@@ -10,12 +10,10 @@ public class Poll {
     private Instant validUntil;
     private Set<VoteOption> options ;
 
-    public Poll(User creator, String question, Instant publishedAt, Instant validUntil, Set<VoteOption> options) {
+    public Poll(User creator, String question, Instant validUntil) {
         this.creator = creator;
         this.question = question;
-        this.publishedAt = publishedAt;
         this.validUntil = validUntil;
-        this.options = options;
     }
 
     public User getCreator() {
@@ -56,5 +54,10 @@ public class Poll {
 
     public void setOptions(Set<VoteOption> options) {
         this.options = options;
+    }
+
+    public void addVoteOption(VoteOption option) {
+        option.setPresentationOrder(options.size() + 1);
+        this.options.add(option);
     }
 }

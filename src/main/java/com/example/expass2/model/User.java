@@ -1,7 +1,7 @@
 package com.example.expass2.model;
 
-import org.apache.commons.compress.utils.Lists;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class User {
@@ -16,7 +16,7 @@ public class User {
     public User(String username, String email) {
         this.username = username;
         this.email = email;
-        this.createdPolls = Lists.newArrayList();
+        this.createdPolls =  new ArrayList<>();
     }
 
     public String getUsername() {
@@ -41,5 +41,9 @@ public class User {
 
     public void setCreatedPolls(List<Poll> createdPolls) {
         this.createdPolls = createdPolls;
+    }
+
+    public void addCreatedPoll(Poll poll) {
+        this.createdPolls.add(poll);
     }
 }

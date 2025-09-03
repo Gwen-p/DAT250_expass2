@@ -25,7 +25,7 @@ public class VoteController {
 
     // Change the voteOption of the vote
     @PutMapping("/{id}")
-    public VoteOption updateVote(@PathVariable String id, @RequestBody VoteOption voteOption) {
+    public VoteOption updateVote(@PathVariable Long id, @RequestBody VoteOption voteOption) {
         this.pollManager.getVote(id).setVoteOption(voteOption);
         return this.pollManager.getVote(id).getVoteOption();
     }
@@ -38,13 +38,13 @@ public class VoteController {
 
     // Obtain a vote by id
     @GetMapping("/{id}")
-    public Vote getPoll(@PathVariable String id) {
+    public Vote getPoll(@PathVariable Long id) {
         return pollManager.getVote(id);
     }
 
     // Delete a vote
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable String id) {
+    public void delete(@PathVariable Long id) {
         pollManager.deleteVote(id);
     }
 }
