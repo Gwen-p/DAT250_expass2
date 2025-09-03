@@ -17,15 +17,22 @@ public class VoteController {
         this.pollManager = _pollManager;
     }
 
+    // Create an anonymous vote
+    @PostMapping("/POLL{pollId}")
+    public Vote createVote(@RequestBody Vote vote,@PathVariable String pollId ) {
+        return pollManager.addVote(vote, pollId);
+    }
+
     // Create a vote
-    @PostMapping
-    public Vote createPoll(@RequestBody Vote vote) {
-        return pollManager.addVote(vote);
+    @PostMapping("/POLL{pollId}/USER{userId}")
+    public Vote createUserVote(@RequestBody Vote vote,@PathVariable String userId,@PathVariable String pollId) {
+        vote.setUser(pollManager.getUser(userId));
+        return pollManager.addVote(vote, pollId);
     }
 
     // Change the voteOption of the vote
     @PutMapping("/{id}")
-    public VoteOption updateVote(@PathVariable Long id, @RequestBody VoteOption voteOption) {
+    public VoteOption updateVote(@PathVariable String id, @RequestBody VoteOption voteOption) {
         this.pollManager.getVote(id).setVoteOption(voteOption);
         return this.pollManager.getVote(id).getVoteOption();
     }
@@ -38,13 +45,13 @@ public class VoteController {
 
     // Obtain a vote by id
     @GetMapping("/{id}")
-    public Vote getPoll(@PathVariable Long id) {
+    public Vote getPoll(@PathVariable String id) {
         return pollManager.getVote(id);
     }
 
     // Delete a vote
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
+    public void delete(@PathVariable String id) {
         pollManager.deleteVote(id);
     }
 }

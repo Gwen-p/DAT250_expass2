@@ -12,11 +12,15 @@ import java.util.*;
 public class PollManager {
     private final Map<String, User> users = new HashMap<>();
     private final Map<String, Poll> polls = new HashMap<>();
-    private final Map<Long, Vote> votes = new HashMap<>();
+    private final Map<String, Vote> votes = new HashMap<>();
 
+    private int pollIds =0;
+    private int votesIds =0;
+
+//USER---------------------------------------------------
 
     public User addUser(User user) {
-        users.put(user.getEmail(), user);
+        users.put(user.getUsername(), user);
         return user;
     }
 
@@ -32,11 +36,13 @@ public class PollManager {
         users.remove(id);
     }
 
-    //---------------------------------------------------
+//POLL---------------------------------------------------
 
 
     public Poll addPoll(Poll poll) {
-        polls.put(poll.getQuestion(), poll);
+        poll.setId(""+pollIds);
+        polls.put(poll.getId(), poll);
+        pollIds += 1;
         return poll;
     }
 
@@ -52,11 +58,19 @@ public class PollManager {
         polls.remove(id);
     }
 
-    //-----------------------------------------------------
+//VOTE---------------------------------------------------
 
-    public Vote addVote(Vote vote) {
+    // add a new vote. If it's not anonymous, the user can only have one vote, the last one user did
+    public Vote addVote(Vote vote, String pollId) {
+        polls.get(pollId).addVotes();
+        vote.setId((long) votesIds);
+        votesIds++;
         vote.setPublishedAt(Instant.now());
-        votes.put(vote.getId(), vote);
+        if(vote.getUser()!=null) {
+            votes.put(vote.getUser().getUsername()+pollId, vote);
+        }else {
+            votes.put(vote.getId().toString(), vote);
+        }
         return vote;
     }
 
@@ -64,11 +78,12 @@ public class PollManager {
         return  new ArrayList<>(votes.values());
     }
 
-    public Vote getVote(Long id) {
+    public Vote getVote(String id) {
         return votes.get(id);
     }
 
-    public void deleteVote(Long id) {
+    public void deleteVote(String id) {
+        polls.get(id).deleteVotes();
         votes.remove(id);
     }
 
