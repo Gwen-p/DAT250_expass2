@@ -1,6 +1,4 @@
-### GET request to example server
-GET https://examples.http-client.intellij.net/get
-    ?generated-in=IntelliJ IDEA
+
 
 ### 1 Create a new user
 POST http://localhost:8080/users
@@ -43,11 +41,10 @@ Content-Type: application/json
 GET http://localhost:8080/polls
 
 ### 7 User 2 votes on the poll
-
-
+POST http://localhost:8080/votes/0/1
 
 ### 8 User 2 changes his vote
-
+POST http://localhost:8080/votes/0/1/marco
 
 ### 9 List votes (-> shows the most recent vote for User 2)
 

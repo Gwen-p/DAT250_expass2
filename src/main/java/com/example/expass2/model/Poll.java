@@ -1,20 +1,24 @@
 package com.example.expass2.model;
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.time.Instant;
-import java.util.LinkedHashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 public class Poll {
+    @JsonIdentityReference(alwaysAsId = true)
     private User creator;
     private String question;
     private Instant publishedAt;
     private Instant validUntil;
     private Set<VoteOption> options;
-    private String id = "0";
-    private int numVotes = 0;
+    private int id = 0;
+    private boolean isPrivate = false;
+    private Map<Long, Vote> votesMap = new LinkedHashMap<>();
 
-
-    public Poll(String question, Instant validUntil,  Set<VoteOption> options) {
+    public Poll(String question, Instant validUntil, Set<VoteOption> options) {
         this.question = question;
         this.validUntil = validUntil;
         this.options = options;
@@ -61,30 +65,40 @@ public class Poll {
     }
 
     public void addVoteOption(VoteOption option) {
-        if (this.options == null) {
-            this.options = new LinkedHashSet<>();
-        }
         option.setPresentationOrder(options.size() + 1);
         this.options.add(option);
     }
 
-    public void setId(String pollIds) {
+    public void setId(int pollIds) {
         this.id = pollIds;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
+    }
+
     public int getNumVotes() {
-        return numVotes;
+        return votesMap.size();
     }
 
-    public void addVotes() {
-        this.numVotes++;
+    public void addVote(Vote vote) {
+        votesMap.put(vote.getId(), vote);
     }
 
-    public void deleteVotes() {
-        this.numVotes--;
+    public void deleteVote(Long voteId) {
+        votesMap.remove(voteId);
     }
+
+    public VoteOption getOption(int optionId) {
+        return options.stream().filter(op -> op.getPresentationOrder() == optionId).findFirst().orElse(null);
+    }
+
 }

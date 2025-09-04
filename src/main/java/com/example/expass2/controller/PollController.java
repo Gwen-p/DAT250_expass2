@@ -33,9 +33,9 @@ public class PollController {
     }
 
     // Create a vote option of a poll
-    @PutMapping("/{id}/options")
-    public void addVoteOptions(@RequestBody VoteOption option, @PathVariable String id) {
-        Poll poll = pollManager.getPoll(id);
+    @PutMapping("/{idPoll}/option")
+    public void addVoteOptions(@RequestBody VoteOption option, @PathVariable Integer idPoll) {
+        Poll poll = pollManager.getPoll(idPoll);
         if (poll == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Encuesta no encontrada");
         }
@@ -50,7 +50,7 @@ public class PollController {
 
     // Obtain a poll by id---------------------------------------- TODO REVISAR
     @GetMapping("/{id}")
-    public Poll getPoll(@PathVariable String id) {
+    public Poll getPoll(@PathVariable Integer id) {
         Poll poll = pollManager.getPoll(id);
         if (poll == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Encuesta no encontrada");

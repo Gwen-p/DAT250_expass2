@@ -8,9 +8,8 @@ public class Vote {
     private VoteOption voteOption;
     private User user;
 
-    public Vote( VoteOption voteOption, User user) {
+    public Vote( VoteOption voteOption) {
         this.voteOption = voteOption;
-        this.user = user;
     }
 
     public Instant getPublishedAt() {

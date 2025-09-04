@@ -11,11 +11,11 @@ import java.util.*;
 @Component
 public class PollManager {
     private final Map<String, User> users = new HashMap<>();
-    private final Map<String, Poll> polls = new HashMap<>();
-    private final Map<String, Vote> votes = new HashMap<>();
+    private final Map<Integer, Poll> polls = new HashMap<>();
+    private final Map<Long, Vote> votes = new HashMap<>();
 
     private int pollIds =0;
-    private int votesIds =0;
+    private Long votesIds = 0L;
 
 //USER---------------------------------------------------
 
@@ -42,7 +42,7 @@ public class PollManager {
     public Poll addPoll(Poll _poll, String userId) {
         Poll poll = _poll;
         if (users.containsKey(userId)) {
-            poll.setId(""+pollIds);
+            poll.setId(pollIds);
             poll.setCreator(users.get(userId));
             users.get(userId).addCreatedPoll(poll);
             polls.put(poll.getId(), poll);
@@ -58,7 +58,7 @@ public class PollManager {
         return new ArrayList<>(polls.values());
     }
 
-    public Poll getPoll(String id) {
+    public Poll getPoll(Integer id) {
         return polls.get(id);
     }
 
@@ -69,16 +69,21 @@ public class PollManager {
 //VOTE---------------------------------------------------
 
     // add a new vote. If it's not anonymous, the user can only have one vote, the last one user did
-    public Vote addVote(Vote vote, String pollId) {
-        polls.get(pollId).addVotes();
-        vote.setId((long) votesIds);
-        votesIds++;
-        vote.setPublishedAt(Instant.now());
-        if(vote.getUser()!=null) {
-            votes.put(vote.getUser().getUsername()+pollId, vote);
-        }else {
-            votes.put(vote.getId().toString(), vote);
+    public Vote addVote(int optionId, Integer pollId, String userId) {
+        Vote vote = null;
+        if (polls.get(pollId).getValidUntil().isBefore(Instant.now())) {
+            vote = new Vote(polls.get(pollId).getOption(optionId));
+
+            vote.setId(votesIds);
+            votesIds++;
+            vote.setPublishedAt(Instant.now());
+            if(userId!=null) {
+                vote.setUser(users.get(userId));
+                votes.put(vote.getId(), vote);
+            }
+            polls.get(pollId).addVote(vote);
         }
+
         return vote;
     }
 
@@ -86,13 +91,8 @@ public class PollManager {
         return  new ArrayList<>(votes.values());
     }
 
-    public Vote getVote(String id) {
+    public Vote getVote(Long id) {
         return votes.get(id);
-    }
-
-    public void deleteVote(String id) {
-        polls.get(id).deleteVotes();
-        votes.remove(id);
     }
 
 }

@@ -1,17 +1,19 @@
 package com.example.expass2.model;
 
 
+import com.fasterxml.jackson.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "username")
 public class User {
     private String username;
     private String email;
-
+    //
     private List<Poll> createdPolls;
-
-    public User() {
-    }
 
     public User(String username, String email) {
         this.username = username;
