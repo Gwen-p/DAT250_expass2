@@ -12,8 +12,8 @@ import java.util.*;
 public class PollManager {
     private final Map<String, User> users = new HashMap<>();
     private final Map<Integer, Poll> polls = new HashMap<>();
-    private int pollIds =0;
-    private Long votesIds = 0L;
+    private int pollIds =1;
+    private Long votesIds = 1L;
 
 //USER---------------------------------------------------
 
@@ -36,7 +36,6 @@ public class PollManager {
 
 //POLL---------------------------------------------------
 
-
     public Poll addPoll(Poll _poll, String userId) {
         Poll poll = _poll;
         if (users.containsKey(userId)) {
@@ -48,7 +47,6 @@ public class PollManager {
         }else {
             poll = null;
         }
-
         return poll;
     }
 
@@ -69,7 +67,7 @@ public class PollManager {
     // add a new vote. If it's not anonymous, the user can only have one vote, the last one user did
     public Vote addVote(int optionId, Integer pollId, String userId) {
         Vote vote = null;
-        if (polls.get(pollId).getValidUntil().isBefore(Instant.now())) {
+        if (polls.get(pollId).getValidUntil().isAfter(Instant.now())){
             if(userId!=null) {
                 vote =  polls.get(pollId).addVote(optionId, users.get(userId), votesIds);
             }else{
@@ -80,10 +78,19 @@ public class PollManager {
         return vote;
     }
 
+    public Vote updateVote( Integer pollId, Long voteId, Integer optionId) {
+        Vote vote = null;
+        if (polls.get(pollId).getValidUntil().isAfter(Instant.now()) &&
+            polls.get(pollId).getOption(optionId) != null){
+            vote = polls.get(pollId).getVote(voteId);
+            vote.setVoteOption(polls.get(pollId).getOption(optionId));
+            vote.setPublishedAt(Instant.now());
+        }
+        return vote;
+    }
+
     public List<Vote> getVotes(Integer pollId) {
-        //todo --------------------------------------------- hacer-
         return  new ArrayList<>(polls.get(pollId).getVotes().values());
-       // return null;
     }
 
     public Vote getVote(Integer pollId, Long id) {

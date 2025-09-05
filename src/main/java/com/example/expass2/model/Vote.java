@@ -1,11 +1,14 @@
 package com.example.expass2.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+
 import java.time.Instant;
 
 public class Vote {
-    private Long id;
+    private Long id = 0L;
     private Instant publishedAt;
     private VoteOption voteOption;
+    @JsonIdentityReference(alwaysAsId = true)
     private User user;
 
     public Vote( VoteOption voteOption) {

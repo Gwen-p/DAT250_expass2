@@ -41,15 +41,16 @@ Content-Type: application/json
 GET http://localhost:8080/polls
 
 ### 7 User 2 votes on the poll
-POST http://localhost:8080/votes/0/1
+POST http://localhost:8080/votes/1/1/marco
 
 ### 8 User 2 changes his vote
-POST http://localhost:8080/votes/0/1/marco
+PUT http://localhost:8080/votes/1/2/marco
 
 ### 9 List votes (-> shows the most recent vote for User 2)
-
+GET http://localhost:8080/votes/1
 
 ### 10 Delete the one poll
-
+DELETE http://localhost:8080/polls/1
 
 ### 11 List votes (-> empty)
+GET http://localhost:8080/votes/1

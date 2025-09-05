@@ -16,7 +16,6 @@ public class Poll {
     private final Set<VoteOption> options;
     private int id = 0;
     private boolean isPrivate = false;
-    private Long votesIds = 0L;
     private final Map<Long, Vote> votesMap = new LinkedHashMap<>();
 
     public Poll(String question, Instant validUntil, Set<VoteOption> options, boolean isPrivate) {
@@ -100,6 +99,7 @@ public class Poll {
         Vote vote = votesMap.get(votesIds);
         vote.setPublishedAt(Instant.now());
         vote.setUser(user);
+        vote.setId(votesIds);
         return vote;
     }
 
@@ -107,6 +107,7 @@ public class Poll {
         votesMap.put(votesIds, new Vote(getOption(optionId)));
         Vote vote = votesMap.get(votesIds);
         vote.setPublishedAt(Instant.now());
+        vote.setId(votesIds);
         return vote;
     }
 
