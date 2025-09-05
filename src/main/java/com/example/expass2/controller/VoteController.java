@@ -50,28 +50,28 @@ public class VoteController {
     }
 
     // Change the voteOption of the vote // TODO really needed?
-    @PutMapping("/{id}")
-    public VoteOption updateVote(@PathVariable Long id, @RequestBody VoteOption voteOption) {
-        if (this.pollManager.getVote(id) == null) {
+    @PutMapping("{pollId}/{id}")
+    public VoteOption updateVote(@PathVariable Integer pollId, @PathVariable Long id, @RequestBody VoteOption voteOption) {
+        if (this.pollManager.getVote(pollId, id) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voto no encontrado");
         }
-        if (this.pollManager.getVote(id) == null) {
+        if (this.pollManager.getVote(pollId, id) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Voto fuera de plazo");
         }
-        this.pollManager.getVote(id).setVoteOption(voteOption);
-        return this.pollManager.getVote(id).getVoteOption();
+        this.pollManager.getVote(pollId, id).setVoteOption(voteOption);
+        return this.pollManager.getVote(pollId, id).getVoteOption();
     }
 
     // Obtain the list of votes
-    @GetMapping
-    public Collection<Vote> getAllVotes() {
-        return pollManager.getVotes();
+    @GetMapping("/{pollId}")
+    public Collection<Vote> getVotes(@PathVariable Integer pollId) {
+        return pollManager.getVotes(pollId);
     }
 
     // Obtain a vote by id
-    @GetMapping("/{id}")
-    public Vote getPoll(@PathVariable Long id) {
-        return pollManager.getVote(id);
+    @GetMapping("/{pollId}/{id}")
+    public Vote getPoll(@PathVariable Integer pollId, @PathVariable Long id) {
+        return pollManager.getVote(pollId,id);
     }
 
 }

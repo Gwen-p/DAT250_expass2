@@ -12,8 +12,6 @@ import java.util.*;
 public class PollManager {
     private final Map<String, User> users = new HashMap<>();
     private final Map<Integer, Poll> polls = new HashMap<>();
-    private final Map<Long, Vote> votes = new HashMap<>();
-
     private int pollIds =0;
     private Long votesIds = 0L;
 
@@ -62,7 +60,7 @@ public class PollManager {
         return polls.get(id);
     }
 
-    public void deletePoll(String id) {
+    public void deletePoll(Integer id) {
         polls.remove(id);
     }
 
@@ -72,27 +70,24 @@ public class PollManager {
     public Vote addVote(int optionId, Integer pollId, String userId) {
         Vote vote = null;
         if (polls.get(pollId).getValidUntil().isBefore(Instant.now())) {
-            vote = new Vote(polls.get(pollId).getOption(optionId));
-
-            vote.setId(votesIds);
-            votesIds++;
-            vote.setPublishedAt(Instant.now());
             if(userId!=null) {
-                vote.setUser(users.get(userId));
-                votes.put(vote.getId(), vote);
+                vote =  polls.get(pollId).addVote(optionId, users.get(userId), votesIds);
+            }else{
+                vote = polls.get(pollId).addVote(optionId, votesIds);
             }
-            polls.get(pollId).addVote(vote);
+            votesIds += 1;
         }
-
         return vote;
     }
 
-    public List<Vote> getVotes() {
-        return  new ArrayList<>(votes.values());
+    public List<Vote> getVotes(Integer pollId) {
+        //todo --------------------------------------------- hacer-
+        return  new ArrayList<>(polls.get(pollId).getVotes().values());
+       // return null;
     }
 
-    public Vote getVote(Long id) {
-        return votes.get(id);
+    public Vote getVote(Integer pollId, Long id) {
+        return polls.get(pollId).getVote(id);
     }
 
 }

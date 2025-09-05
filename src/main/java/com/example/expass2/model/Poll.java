@@ -13,15 +13,17 @@ public class Poll {
     private String question;
     private Instant publishedAt;
     private Instant validUntil;
-    private Set<VoteOption> options;
+    private final Set<VoteOption> options;
     private int id = 0;
     private boolean isPrivate = false;
-    private Map<Long, Vote> votesMap = new LinkedHashMap<>();
+    private Long votesIds = 0L;
+    private final Map<Long, Vote> votesMap = new LinkedHashMap<>();
 
-    public Poll(String question, Instant validUntil, Set<VoteOption> options) {
+    public Poll(String question, Instant validUntil, Set<VoteOption> options, boolean isPrivate) {
         this.question = question;
         this.validUntil = validUntil;
         this.options = options;
+        this.isPrivate = isPrivate;
     }
 
     public User getCreator() {
@@ -60,10 +62,6 @@ public class Poll {
         return options;
     }
 
-    public void setOptions(Set<VoteOption> options) {
-        this.options = options;
-    }
-
     public void addVoteOption(VoteOption option) {
         option.setPresentationOrder(options.size() + 1);
         this.options.add(option);
@@ -89,10 +87,6 @@ public class Poll {
         return votesMap.size();
     }
 
-    public void addVote(Vote vote) {
-        votesMap.put(vote.getId(), vote);
-    }
-
     public void deleteVote(Long voteId) {
         votesMap.remove(voteId);
     }
@@ -101,4 +95,26 @@ public class Poll {
         return options.stream().filter(op -> op.getPresentationOrder() == optionId).findFirst().orElse(null);
     }
 
+    public Vote addVote(int optionId, User user, Long votesIds) {
+        votesMap.put(votesIds, new Vote(getOption(optionId)));
+        Vote vote = votesMap.get(votesIds);
+        vote.setPublishedAt(Instant.now());
+        vote.setUser(user);
+        return vote;
+    }
+
+    public Vote addVote(int optionId, long votesIds) {
+        votesMap.put(votesIds, new Vote(getOption(optionId)));
+        Vote vote = votesMap.get(votesIds);
+        vote.setPublishedAt(Instant.now());
+        return vote;
+    }
+
+    public Vote getVote(Long id) {
+        return votesMap.get(id);
+    }
+
+    public Map<Long, Vote> getVotes() {
+        return votesMap;
+    }
 }
