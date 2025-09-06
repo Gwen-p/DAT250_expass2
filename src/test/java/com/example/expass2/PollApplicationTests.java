@@ -1,11 +1,14 @@
 package com.example.expass2;
-
+import com.example.expass2.model.User;
 import com.example.expass2.model.Vote;
+import com.example.expass2.model.VoteOption;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,93 +19,123 @@ class PollApplicationTests {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void testCreateUserAlice() {
-        createUser("alice", "alice@example.com");
-    }
+    public void test1() {
+        //### 1 Create a new user
+        User alice = createUser("alice", "alice@example.com");
+        assertEquals("alice", alice.getUsername());
 
-    @Test
-    public void testCreateUserMarco() {
-        createUser("marco", "marco@example.com");
-    }
+        //### 2 List all users (-> shows the newly created user)
+        User[] users1 = listUsers();
+        assertEquals(1, users1.length);
 
-    @Test
-    public void testCreatePollByAlice() {
-        createUser("alice", "alice@example.com");
+        //### 3 Create another user
+        User marco = createUser("marco", "marco@example.com");
+        assertEquals("marco", marco.getUsername());
+
+        // 4 List all users again (-> shows two users)
+        User[] users2 = listUsers();
+        assertEquals(2, users2.length);
+
+        //### 5 User 1 creates a new poll
         createPoll("alice", "What is your favourite animal?");
-    }
 
-    @Test
-    public void testUserMarcoVotes() {
-        createUser("alice", "alice@example.com");
-        createUser("marco", "marco@example.com");
-        createPoll("alice", "What is your favourite animal?");
+        //### 6 List polls (-> shows the new poll)
+        String[] polls = listPolls();
+        assertEquals(1, polls.length);
+
+        //### 7 User 2 votes on the poll
         Vote voteMarco = castVote(1, 1, "marco");
-
         assertNotNull(voteMarco);
-        assertEquals(1, voteMarco.getVoteOption().getPresentationOrder());
         assertEquals("marco", voteMarco.getUser().getUsername());
-    }
 
-    @Test
-    public void testAnonymousVote() {
-        createUser("alice", "alice@example.com");
-        createPoll("alice", "What is your favourite animal?");
-        Vote voteAnon = castVote(1, 1, null);
-
+        //### 8 Anonymous user votes on the poll
+        Vote voteAnon = castVote(1, 2, null);
         assertNotNull(voteAnon);
-        assertEquals(1, voteAnon.getVoteOption().getPresentationOrder());
         assertNull(voteAnon.getUser());
-    }
 
-    @Test
-    public void testMarcoChangesVote() {
-        createUser("alice", "alice@example.com");
-        createUser("marco", "marco@example.com");
-        createPoll("alice", "What is your favourite animal?");
-        Vote voteMarco = castVote(1, 1, "marco");
+        //### 9 User 2 changes his vote
         Vote updatedVote = updateVote(1, voteMarco.getId(), 2);
-
-        assertNotNull(updatedVote);
         assertEquals(2, updatedVote.getVoteOption().getPresentationOrder());
-    }
 
-    @Test
-    public void testListVotesIncludesMarco() {
-        createUser("alice", "alice@example.com");
-        createUser("marco", "marco@example.com");
-        createPoll("alice", "What is your favourite animal?");
-        Vote voteMarco = castVote(1, 1, "marco");
-        updateVote(1, voteMarco.getId(), 2);
-
+        //### 10 List votes from a poll(-> shows the most recent vote
         Vote[] votes = listVotes(1);
-        boolean found = false;
+        boolean foundMarco = false;
         for (Vote v : votes) {
             if (v.getUser() != null && "marco".equals(v.getUser().getUsername())) {
                 assertEquals(2, v.getVoteOption().getPresentationOrder());
-                found = true;
+                foundMarco = true;
             }
         }
-        assertTrue(found);
-    }
+        assertTrue(foundMarco);
 
-    @Test
-    public void testDeletePollAndCheckVotes() {
-        createUser("alice", "alice@example.com");
-        createPoll("alice", "What is your favourite animal?");
+        //### 11 Delete the poll by id
         deletePoll(1);
 
+        //### 12 List votes from a poll(-> not found)
         ResponseEntity<Vote[]> response = restTemplate.getForEntity("/votes/1", Vote[].class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
-// ------------------- Métodos auxiliares -------------------
-    private void createUser(String username, String email) {
+    @Test
+    public void test2() {
+        User bob = createUser("bob", "bob@example.com");
+        User carla = createUser("carla", "carla@example.com");
+
+        assertEquals("bob", bob.getUsername());
+        assertEquals("carla", carla.getUsername());
+
+        createPoll("bob", "What is your favourite sport?");
+
+        // Insertar nuevas opciones dinámicamente
+        VoteOption basketball = new VoteOption("Basketball", 3);
+        addVoteOption(1, basketball);
+
+        VoteOption tennis = new VoteOption("Tennis", 4);
+        addVoteOption(1, tennis);
+
+        Set<VoteOption> options = listVoteOptions(1);
+        assertEquals(4, options.size());
+
+        // Carla vota por Tennis (opción 4)
+        Vote voteCarla = castVote(1, 4, "carla");
+        assertNotNull(voteCarla);
+        assertEquals("carla", voteCarla.getUser().getUsername());
+        assertEquals(4, voteCarla.getVoteOption().getPresentationOrder());
+
+        // Bob vota por Basketball (opción 3)
+        Vote voteBob = castVote(1, 3, "bob");
+        assertNotNull(voteBob);
+        assertEquals("bob", voteBob.getUser().getUsername());
+        assertEquals(3, voteBob.getVoteOption().getPresentationOrder());
+
+        // Listar votos -> debe incluir ambos usuarios
+        Vote[] votes = listVotes(1);
+        boolean foundBob = false;
+        boolean foundCarla = false;
+        for (Vote v : votes) {
+            if (v.getUser() != null) {
+                if (v.getUser().getUsername().equals("bob")) foundBob = true;
+                if (v.getUser().getUsername().equals("carla")) foundCarla = true;
+            }
+        }
+        assertTrue(foundBob);
+        assertTrue(foundCarla);
+    }
+
+    private User createUser(String username, String email) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String body = String.format("{\"username\":\"%s\",\"email\":\"%s\"}", username, email);
         HttpEntity<String> request = new HttpEntity<>(body, headers);
-        ResponseEntity<String> response = restTemplate.postForEntity("/users", request, String.class);
+        ResponseEntity<User> response = restTemplate.postForEntity("/users", request, User.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+        return response.getBody();
+    }
+
+    private User[] listUsers() {
+        ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        return response.getBody();
     }
 
     private void createPoll(String username, String question) {
@@ -121,6 +154,12 @@ class PollApplicationTests {
         HttpEntity<String> request = new HttpEntity<>(body, headers);
         ResponseEntity<String> response = restTemplate.postForEntity("/polls/" + username, request, String.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    private String[] listPolls() {
+        ResponseEntity<String[]> response = restTemplate.getForEntity("/polls", String[].class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        return response.getBody();
     }
 
     private Vote castVote(int pollId, int optionId, String username) {
@@ -146,5 +185,19 @@ class PollApplicationTests {
     private void deletePoll(int pollId) {
         ResponseEntity<Void> response = restTemplate.exchange("/polls/" + pollId, HttpMethod.DELETE, null, Void.class);
         assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    private void addVoteOption(int pollId, VoteOption option) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<VoteOption> request = new HttpEntity<>(option, headers);
+        ResponseEntity<VoteOption> response = restTemplate.postForEntity("/polls/" + pollId + "/options", request, VoteOption.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    private Set<VoteOption> listVoteOptions(int pollId) {
+        ResponseEntity<Set> response = restTemplate.getForEntity("/polls/" + pollId + "/options", Set.class);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        return response.getBody();
     }
 }

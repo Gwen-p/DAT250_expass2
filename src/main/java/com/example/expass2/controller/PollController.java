@@ -56,6 +56,15 @@ public class PollController {
         return poll;
     }
 
+    // List all options of a poll
+    @GetMapping("/{idPoll}/options")
+    public Collection<VoteOption> getVoteOptions(@PathVariable Integer idPoll) {
+        Poll poll = pollManager.getPoll(idPoll);
+        if (poll == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
+        }
+        return poll.getOptions();
+    }
 
     // Delete a poll
     @DeleteMapping("/{id}")
