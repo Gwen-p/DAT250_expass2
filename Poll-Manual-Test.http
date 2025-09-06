@@ -43,14 +43,17 @@ GET http://localhost:8080/polls
 ### 7 User 2 votes on the poll
 POST http://localhost:8080/votes/1/1/marco
 
-### 8 User 2 changes his vote
-PUT http://localhost:8080/votes/1/2/marco
+### 8 Anonymous user votes on the poll
+POST http://localhost:8080/votes/1/1
 
-### 9 List votes from a poll(-> shows the most recent vote for User 2)
+### 9 User 2 changes his vote
+PUT http://localhost:8080/votes/1/1/2
+
+### 10 List votes from a poll(-> shows the most recent vote for User 2)
 GET http://localhost:8080/votes/1
 
-### 10 Delete the poll by id
+### 11 Delete the poll by id
 DELETE http://localhost:8080/polls/1
 
-### 11 List votes from a poll(-> empty)
+### 12 List votes from a poll(-> not found)
 GET http://localhost:8080/votes/1

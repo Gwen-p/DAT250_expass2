@@ -16,6 +16,7 @@ public class Poll {
     private final Set<VoteOption> options;
     private int id = 0;
     private boolean isPrivate = false;
+    private Long votesIds = 1L;
     private final Map<Long, Vote> votesMap = new LinkedHashMap<>();
 
     public Poll(String question, Instant validUntil, Set<VoteOption> options, boolean isPrivate) {
@@ -94,20 +95,22 @@ public class Poll {
         return options.stream().filter(op -> op.getPresentationOrder() == optionId).findFirst().orElse(null);
     }
 
-    public Vote addVote(int optionId, User user, Long votesIds) {
+    public Vote addVote(Integer optionId, User user) {
         votesMap.put(votesIds, new Vote(getOption(optionId)));
         Vote vote = votesMap.get(votesIds);
         vote.setPublishedAt(Instant.now());
         vote.setUser(user);
         vote.setId(votesIds);
+        votesIds++;
         return vote;
     }
 
-    public Vote addVote(int optionId, long votesIds) {
+    public Vote addVote(int optionId) {
         votesMap.put(votesIds, new Vote(getOption(optionId)));
         Vote vote = votesMap.get(votesIds);
         vote.setPublishedAt(Instant.now());
         vote.setId(votesIds);
+        votesIds++;
         return vote;
     }
 
@@ -120,5 +123,15 @@ public class Poll {
 
     public Map<Long, Vote> getVotes() {
         return votesMap;
+    }
+
+    public boolean userHasVote(String userId) {
+        return votesMap.values().stream().anyMatch(v -> v.getUser().getUsername().equals(userId));
+    }
+
+    public Vote updateVote(Long voteId, Integer optionId) {
+        votesMap.get(voteId).setVoteOption(getOption(optionId));
+        votesMap.get(voteId).setPublishedAt(Instant.now());
+        return votesMap.get(voteId);
     }
 }

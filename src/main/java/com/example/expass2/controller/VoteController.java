@@ -29,7 +29,7 @@ public class VoteController {
         }
         Vote vote = pollManager.addVote(optionId, pollId, null);
         if (vote == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote after the deadline");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vote after the deadline");
         }
         return vote;
     }
@@ -37,18 +37,22 @@ public class VoteController {
     // Create a vote
     @PostMapping("/{pollId}/{optionId}/{userId}")
     public Vote createUserVote(@PathVariable int optionId,@PathVariable String userId,@PathVariable Integer pollId) {
+        
+        if (pollManager.getPoll(pollId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
+        }
         if (pollManager.getUser(userId) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        if (pollManager.getPoll(pollId) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
+        if (pollManager.getPoll(pollId).userHasVote(userId)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "User has voted in this poll");
         }
         if (this.pollManager.getPoll(pollId).getOption(optionId) == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "VoteOption not found");
         }
         Vote vote = pollManager.addVote(optionId, pollId, userId);
         if (vote == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote after the deadline");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vote after the deadline");
         }
         return vote;
     }
@@ -66,8 +70,9 @@ public class VoteController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "VoteOption not found");
         }
         if (this.pollManager.updateVote(pollId, id, optionId) == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote after the deadline");
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Vote after the deadline");
         }
+
         return this.pollManager.getVote(pollId, id);
     }
 
@@ -81,12 +86,12 @@ public class VoteController {
     }
 
     // Obtain a vote by id
-    @GetMapping("/{pollId}/{id}")
-    public Vote getPoll(@PathVariable Integer pollId, @PathVariable Long id) {
+    @GetMapping("/{pollId}/{voteId}")
+    public Vote getPoll(@PathVariable Integer pollId, @PathVariable Long voteId) {
         if (pollManager.getPoll(pollId) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
         }
-        return pollManager.getVote(pollId,id);
+        return pollManager.getVote(pollId,voteId);
     }
 
 }

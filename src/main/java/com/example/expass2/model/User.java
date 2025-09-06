@@ -10,9 +10,8 @@ import java.util.List;
         generator = ObjectIdGenerators.PropertyGenerator.class,
         property = "username")
 public class User {
-    private String username;
+    private final String username;
     private String email;
-    //
     private List<Poll> createdPolls;
 
     public User(String username, String email) {
@@ -23,10 +22,6 @@ public class User {
 
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getEmail() {
@@ -41,14 +36,14 @@ public class User {
         return createdPolls;
     }
 
-    public void setCreatedPolls(List<Poll> createdPolls) {
-        this.createdPolls = createdPolls;
-    }
-
     public void addCreatedPoll(Poll poll) {
         if (this.createdPolls == null) {
             this.createdPolls = new ArrayList<>();
         }
         this.createdPolls.add(poll);
+    }
+
+    public void deletePoll(Poll poll) {
+        createdPolls.remove(poll);
     }
 }

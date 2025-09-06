@@ -13,7 +13,7 @@ public class PollManager {
     private final Map<String, User> users = new HashMap<>();
     private final Map<Integer, Poll> polls = new HashMap<>();
     private int pollIds =1;
-    private Long votesIds = 1L;
+
 
 //USER---------------------------------------------------
 
@@ -36,17 +36,13 @@ public class PollManager {
 
 //POLL---------------------------------------------------
 
-    public Poll addPoll(Poll _poll, String userId) {
-        Poll poll = _poll;
-        if (users.containsKey(userId)) {
-            poll.setId(pollIds);
-            poll.setCreator(users.get(userId));
-            users.get(userId).addCreatedPoll(poll);
-            polls.put(poll.getId(), poll);
-            pollIds += 1;
-        }else {
-            poll = null;
-        }
+    public Poll addPoll(Poll poll, String userId) {
+        poll.setId(pollIds);
+        poll.setPublishedAt(Instant.now());
+        poll.setCreator(users.get(userId));
+        users.get(userId).addCreatedPoll(poll);
+        polls.put(poll.getId(), poll);
+        pollIds += 1;
         return poll;
     }
 
@@ -59,6 +55,7 @@ public class PollManager {
     }
 
     public void deletePoll(Integer id) {
+        polls.get(id).getCreator().deletePoll(polls.get(id));
         polls.remove(id);
     }
 
@@ -69,24 +66,19 @@ public class PollManager {
         Vote vote = null;
         if (polls.get(pollId).getValidUntil().isAfter(Instant.now())){
             if(userId!=null) {
-                vote =  polls.get(pollId).addVote(optionId, users.get(userId), votesIds);
+                vote =  polls.get(pollId).addVote(optionId, users.get(userId));
             }else{
-                vote = polls.get(pollId).addVote(optionId, votesIds);
+                vote = polls.get(pollId).addVote(optionId);
             }
-            votesIds += 1;
         }
         return vote;
     }
 
     public Vote updateVote( Integer pollId, Long voteId, Integer optionId) {
-        Vote vote = null;
-        if (polls.get(pollId).getValidUntil().isAfter(Instant.now()) &&
-            polls.get(pollId).getOption(optionId) != null){
-            vote = polls.get(pollId).getVote(voteId);
-            vote.setVoteOption(polls.get(pollId).getOption(optionId));
-            vote.setPublishedAt(Instant.now());
+        if (polls.get(pollId).getValidUntil().isAfter(Instant.now())){
+            return polls.get(pollId).updateVote(voteId, optionId);
         }
-        return vote;
+        return null;
     }
 
     public List<Vote> getVotes(Integer pollId) {

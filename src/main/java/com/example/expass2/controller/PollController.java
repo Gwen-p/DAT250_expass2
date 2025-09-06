@@ -24,12 +24,10 @@ public class PollController {
     // Create a poll
     @PostMapping("/{userId}")
     public Poll createPoll(@RequestBody Poll _poll, @PathVariable String userId) {
-        _poll.setPublishedAt(Instant.now());
-        Poll poll = pollManager.addPoll(_poll, userId);
-        if (poll == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User no encontrado");
+        if (pollManager.getUser(userId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
-        return poll;
+        return pollManager.addPoll(_poll, userId);
     }
 
     // Create a vote option of a poll
@@ -37,7 +35,7 @@ public class PollController {
     public void addVoteOptions(@RequestBody VoteOption option, @PathVariable Integer idPoll) {
         Poll poll = pollManager.getPoll(idPoll);
         if (poll == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Encuesta no encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
         }
         poll.addVoteOption(option);
     }
@@ -48,12 +46,12 @@ public class PollController {
         return pollManager.getPolls();
     }
 
-    // Obtain a poll by id---------------------------------------- TODO REVISAR
+    // Obtain a poll by id
     @GetMapping("/{id}")
     public Poll getPoll(@PathVariable Integer id) {
         Poll poll = pollManager.getPoll(id);
         if (poll == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Encuesta no encontrada");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
         }
         return poll;
     }
@@ -62,6 +60,9 @@ public class PollController {
     // Delete a poll
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Integer id) {
+        if (pollManager.getPoll(id) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
+        }
         pollManager.deletePoll(id);
     }
 }
