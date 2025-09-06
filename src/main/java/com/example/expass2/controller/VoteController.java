@@ -24,7 +24,7 @@ public class VoteController {
         if (pollManager.getPoll(pollId) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
         }
-        if (this.pollManager.getPoll(pollId).getOption(optionId) != null){
+        if (this.pollManager.getPoll(pollId).getOption(optionId) == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "VoteOption not found");
         }
         Vote vote = pollManager.addVote(optionId, pollId, null);
@@ -43,7 +43,7 @@ public class VoteController {
         if (pollManager.getPoll(pollId) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
         }
-        if (this.pollManager.getPoll(pollId).getOption(optionId) != null){
+        if (this.pollManager.getPoll(pollId).getOption(optionId) == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "VoteOption not found");
         }
         Vote vote = pollManager.addVote(optionId, pollId, userId);
@@ -62,7 +62,7 @@ public class VoteController {
         if (this.pollManager.getVote(pollId, id) == null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Vote not found");
         }
-        if (this.pollManager.getPoll(pollId).getOption(optionId) != null){
+        if (this.pollManager.getPoll(pollId).getOption(optionId) == null){
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "VoteOption not found");
         }
         if (this.pollManager.updateVote(pollId, id, optionId) == null) {
@@ -74,12 +74,18 @@ public class VoteController {
     // Obtain the list of votes
     @GetMapping("/{pollId}")
     public Collection<Vote> getVotes(@PathVariable Integer pollId) {
+        if (pollManager.getPoll(pollId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
+        }
         return pollManager.getVotes(pollId);
     }
 
     // Obtain a vote by id
     @GetMapping("/{pollId}/{id}")
     public Vote getPoll(@PathVariable Integer pollId, @PathVariable Long id) {
+        if (pollManager.getPoll(pollId) == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Poll not found");
+        }
         return pollManager.getVote(pollId,id);
     }
 

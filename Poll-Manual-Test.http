@@ -46,11 +46,11 @@ POST http://localhost:8080/votes/1/1/marco
 ### 8 User 2 changes his vote
 PUT http://localhost:8080/votes/1/2/marco
 
-### 9 List votes (-> shows the most recent vote for User 2)
+### 9 List votes from a poll(-> shows the most recent vote for User 2)
 GET http://localhost:8080/votes/1
 
-### 10 Delete the one poll
+### 10 Delete the poll by id
 DELETE http://localhost:8080/polls/1
 
-### 11 List votes (-> empty)
+### 11 List votes from a poll(-> empty)
 GET http://localhost:8080/votes/1

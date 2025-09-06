@@ -112,7 +112,10 @@ public class Poll {
     }
 
     public Vote getVote(Long id) {
-        return votesMap.get(id);
+        if (votesMap.containsKey(id)) {
+            return votesMap.get(id);
+        }
+        return null;
     }
 
     public Map<Long, Vote> getVotes() {
