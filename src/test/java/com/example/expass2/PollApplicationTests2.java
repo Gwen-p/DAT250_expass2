@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class PollScenario2Tests {
+public class PollApplicationTests2 {
 
     @Autowired
     private TestRestTemplate restTemplate;
