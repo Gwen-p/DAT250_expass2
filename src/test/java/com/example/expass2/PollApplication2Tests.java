@@ -2,6 +2,8 @@ package com.example.expass2;
 
 import com.example.expass2.model.*;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.*;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -18,13 +20,18 @@ import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class PollApplicationTests2 {
+public class PollApplication2Tests {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private static String user1Id = "bob";
     private static String user2Id = "carla";
@@ -43,12 +50,14 @@ public class PollApplicationTests2 {
 
     @Test
     @Order(2)
-    void listUsersAfterFirst() {
+    void listUsersAfterFirst() throws JsonProcessingException {
         // ### 2 List all users (-> shows bob)
-        ResponseEntity<List> response = restTemplate.getForEntity("/users", List.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/users", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).hasSize(1);
+
+        List<?> users = objectMapper.readValue(response.getBody(), List.class);
+        assertThat(users).hasSize(1);
     }
 
     @Test
@@ -64,12 +73,14 @@ public class PollApplicationTests2 {
 
     @Test
     @Order(4)
-    void listUsersAfterSecond() {
+    void listUsersAfterSecond() throws JsonProcessingException {
         // ### 4 List all users again (-> shows bob and carla)
-        ResponseEntity<List> response = restTemplate.getForEntity("/users", List.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/users", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody()).hasSize(2);
+
+        List<?> users = objectMapper.readValue(response.getBody(), List.class);
+        assertThat(users).hasSize(2);
     }
 
     @Test
@@ -121,9 +132,17 @@ public class PollApplicationTests2 {
     @Order(9)
     void listAllVoteOptions() {
         // ### 9 List all options of the poll (-> should show 4 options)
-        ResponseEntity<Set> response = restTemplate.getForEntity("/polls/" + pollId + "/options", Set.class);
+        ResponseEntity<String> response = restTemplate.getForEntity("/polls/" + pollId + "/options", String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-        assertThat(response.getBody()).hasSize(4);
+        assertThat(response.getBody()).isNotNull();
+
+        Set<?> options = null;
+        try {
+            options = objectMapper.readValue(response.getBody(), Set.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
+        assertThat(options).hasSize(4);
     }
 
     @Test

@@ -23,13 +23,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-public class PollApplicationTests1 {
+public class PollApplication1Tests {
 
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private static String user1Id = "alice";
-    private static String user2Id = "marco";
+    private static final String user1Id = "alice";
+    private static final String user2Id = "marco";
     private static Integer pollId;
     private static Long voteIdMarco;
 
