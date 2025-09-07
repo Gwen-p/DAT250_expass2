@@ -3,7 +3,7 @@
 ## Project Overview
 I developed a REST API for a Poll application using Spring Boot as part of the DAT250 course assignment. The application enables users to create polls, add voting options, vote on polls, and manage user accounts through RESTful endpoints. The project follows the domain model specification provided in the assignment description.
 
-**GitHub Repository fot the proyect**: [https://github.com/Gwen-p/DAT250_expass2](https://github.com/Gwen-p/DAT250_expass2)
+**GitHub Repository fot the project**: [https://github.com/Gwen-p/DAT250_expass2](https://github.com/Gwen-p/DAT250_expass2)
 
 ## UML diagram
 ```mermaid
@@ -140,11 +140,11 @@ class User {
 ## Technical Implementation
 
 ### Domain Model
-The application implements the domain model as specified in the assignment:
-- **User**: Users with username and email who can create polls and vote
-- **Poll**: Voting polls containing questions, validity period, and voting options
-- **VoteOption**: Individual options within a poll with caption and presentation order
-- **Vote**: Records of user votes with timestamps and user associations
+The application implements a version the domain model in the assignment but with :
+- **User**: Users with username (used as an ID) and email who can create polls and vote. 
+- **Poll**: Voting polls containing questions, validity period, and voting options.
+- **VoteOption**: Individual options within a poll with caption and presentation order.
+- **Vote**: Records of user votes with timestamps and user associations.
 
 ### REST API Structure
 Implemented three main controllers with comprehensive CRUD operations:
@@ -270,23 +270,8 @@ Error responses could be more standardized across different endpoints. Currently
 ### 4. API Documentation
 While the basic functionality works, the API lacks comprehensive documentation. Swagger/OpenAPI integration would improve usability for consumers.
 
-### 5. Data Persistence
-The application uses in-memory storage (HashMaps), which means data is lost on application restart. A database persistence layer would be needed for production use.
-
-### 6. Security Considerations
+### . Security Considerations
 No authentication or authorization is implemented. All operations are available without any security constraints.
-
-## Lessons Learned
-
-1. **Dependency Management**: Letting Spring Boot manage dependency versions prevents conflicts and ensures compatibility across the ecosystem.
-
-2. **REST API Design**: Proper HTTP method selection and resource modeling are crucial for creating intuitive and standards-compliant APIs.
-
-3. **Testing Strategy**: Comprehensive testing requires both manual verification (HTTP files) and automated integration tests covering different scenarios.
-
-4. **JSON Serialization**: Complex object relationships require careful annotation configuration to prevent serialization issues.
-
-5. **CI/CD Pipeline**: GitHub Actions provides powerful automation capabilities but requires precise configuration and thorough testing.
 
 ## Conclusion
 
@@ -294,7 +279,7 @@ The assignment successfully demonstrates a working REST API for a polling applic
 
 The project implementation shows understanding of Spring Boot fundamentals, REST API design principles, and testing methodologies. While there are areas for improvement (particularly around error handling, validation, and documentation), the core functionality works correctly and provides a solid foundation for future enhancements.
 
-**Key Achievements**:
+**Achievements**:
 -  Complete REST API implementation
 -  Proper domain model with relationships
 -  Comprehensive testing coverage
