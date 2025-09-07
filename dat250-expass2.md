@@ -261,8 +261,8 @@ This restructuring improved both **maintainability** and **reliability** of the 
 
 ## Pending Issues and Limitations
 
-### 1. Private Poll Attribute
-The `isPrivate` attribute in Poll class is currently unused. I included it anticipating future requirements for private polls that would need access control, but it's not implemented in this version.
+### 1. Private Poll Attribute and future functions
+The `isPrivate` attribute in Poll class is currently unused. I included it anticipating future requirements for private polls that would need access control, but it's not implemented in this version. More functionalities such as vote counting and limiting the number of votes per user in private polls will be added in future versions.
 
 ### 2. Vote Validation Logic
 The current implementation doesn't fully handle all edge cases:
