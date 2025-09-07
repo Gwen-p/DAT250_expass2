@@ -270,7 +270,7 @@ Error responses could be more standardized across different endpoints. Currently
 ### 4. API Documentation
 While the basic functionality works, the API lacks comprehensive documentation. Swagger/OpenAPI integration would improve usability for consumers.
 
-### . Security Considerations
+### 5. Security Considerations
 No authentication or authorization is implemented. All operations are available without any security constraints.
 
 ## Conclusion
