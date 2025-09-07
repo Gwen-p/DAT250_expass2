@@ -234,10 +234,16 @@ public class User {
 private User creator;
 ```
 
-### 7. Testing Infrastructure Problems
-**Problem**: Encountered Gradle test executor failures with "Could not complete execution for Gradle Test Executor" errors due to dependency conflicts.
+### 7. Testing Problems
+**Problem:** During implementation, several issues arose with the Gradle test executor, specifically *"Could not complete execution for Gradle Test Executor"* errors. The root cause was traced to **dependency conflicts** between Spring Boot’s managed JUnit versions and explicitly declared versions in the build configuration.
 
-**Solution**: Resolved by letting Spring Boot manage dependency versions automatically and removing explicit version declarations that caused conflicts.
+**Solution:** The problem was resolved by allowing Spring Boot to manage dependency versions automatically and removing the explicit version declarations that introduced conflicts. In addition, I restructured the automated tests:
+
+* Dividing the different scenarios into **separate test classes** for better modularity and readability.
+* Organizing tests into **distinct modules corresponding to each step of a scenario**, ensuring clearer test coverage and easier debugging.
+
+This restructuring improved both **maintainability** and **reliability** of the testing infrastructure.
+
 
 ### 8. GitHub Actions CI/CD Setup
 **Problem**: Initial CI workflow failures due to multiple issues:
