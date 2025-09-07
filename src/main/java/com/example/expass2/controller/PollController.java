@@ -1,14 +1,12 @@
 package com.example.expass2.controller;
 
 import com.example.expass2.model.Poll;
-import com.example.expass2.model.User;
 import com.example.expass2.model.VoteOption;
 import com.example.expass2.service.PollManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.Instant;
 import java.util.Collection;
 
 @RestController
@@ -31,7 +29,7 @@ public class PollController {
     }
 
     // Create a vote option of a poll
-    @PutMapping("/{idPoll}/option")
+    @PostMapping("/{idPoll}/option")
     public void addVoteOptions(@RequestBody VoteOption option, @PathVariable Integer idPoll) {
         Poll poll = pollManager.getPoll(idPoll);
         if (poll == null) {

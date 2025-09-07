@@ -19,6 +19,10 @@ public class Poll {
     private Long votesIds = 1L;
     private final Map<Long, Vote> votesMap = new LinkedHashMap<>();
 
+    public Poll() {
+        this.options = new java.util.HashSet<>();
+    }
+
     public Poll(String question, Instant validUntil, Set<VoteOption> options, boolean isPrivate) {
         this.question = question;
         this.validUntil = validUntil;
@@ -60,6 +64,10 @@ public class Poll {
 
     public Set<VoteOption> getOptions() {
         return options;
+    }
+
+    public void setOptions(Set<VoteOption> options) {
+        if (options != null) this.options.addAll(options);
     }
 
     public void addVoteOption(VoteOption option) {

@@ -11,6 +11,8 @@ public class Vote {
     @JsonIdentityReference(alwaysAsId = true)
     private User user;
 
+    public Vote() {}
+
     public Vote( VoteOption voteOption) {
         this.voteOption = voteOption;
     }
