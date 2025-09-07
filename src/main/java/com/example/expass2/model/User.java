@@ -24,7 +24,7 @@ public class User {
         this.email = email;
         this.createdPolls =  new ArrayList<>();
     }
-
+//
     public String getUsername() {
         return username;
     }
