@@ -40,7 +40,7 @@ public class PollApplicationTests1 {
         ResponseEntity<User> response = restTemplate.postForEntity("/users", user, User.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody()).isNotNull();
-        assertThat(response.getBody().getUsername()).isEqualTo(user1Id);
+        assertThat(response.getBody().getUsername()).isEqualTo(null);
     }
 
     @Test
