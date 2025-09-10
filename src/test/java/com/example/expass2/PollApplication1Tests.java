@@ -79,7 +79,7 @@ public class PollApplication1Tests {
     void user1CreatesPoll() {
         Poll poll = new Poll();
         poll.setQuestion("What is your favourite animal?");
-        poll.setValidUntil(Instant.parse("2025-09-10T10:00:00Z"));
+        poll.setValidUntil(Instant.parse("2030-09-10T10:00:00Z"));
         // Set options
         VoteOption option1 = new VoteOption("Giraffe", 1);
         VoteOption option2 = new VoteOption("Snake", 2);
